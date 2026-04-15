@@ -112,13 +112,8 @@ Include at least one sentence discussing the result of your fact-checking endeav
 
 > "There’s a 2-in-3 chance that a member of the Avengers returned from their first stint in the afterlife"
 
-
-
 ### Include the code
 
-<<<<<<< HEAD
-=======
-Make sure to include the code to derive the (numeric) fact for the statement
 ```{r}
 death1 <- deaths %>% filter(Time == 1)
 return1  <- returns %>% filter(Time == 1)
@@ -126,18 +121,10 @@ return1  <- returns %>% filter(Time == 1)
 mean(return1$Return[death1$Death == "yes"] == "yes")
 
 ```
->>>>>>> 63c12168f308f2614b9565891d23579f2ae7a78d
 
-  
 ### Include your answer
 
-<<<<<<< HEAD
-
-Include at least one sentence discussing the result of your fact-checking endeavor.
-=======
 The result of my stuff has the average amount of Avengers that returned from their first death is around 0.67, which is equivalent to 2/3. So, the statement that "there's a 2-in-3 chance that a member of the Avengers returned from their first stint in the afterlife" is true.
->>>>>>> 63c12168f308f2614b9565891d23579f2ae7a78d
-
 
 ## Nilutpaul's Section
 
