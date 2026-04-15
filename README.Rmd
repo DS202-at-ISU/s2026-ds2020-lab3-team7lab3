@@ -70,10 +70,7 @@ Each team member picks one of the statements in the FiveThirtyEight [analysis](h
 > "I counted 89 total deaths"
 
 ```{r}
-av <- read.csv("https://raw.githubusercontent.com/fivethirtyeight/data/master/avengers/avengers.csv",
-               stringsAsFactors = FALSE)
-
-deaths <- av %>%
+deaths_ <- av %>%
   pivot_longer(
     cols = starts_with("Death"),
     names_to = "Time",
@@ -82,7 +79,7 @@ deaths <- av %>%
   mutate(Time = parse_number(Time)) %>%
   filter(Death != "")
 
-total_deaths <- deaths %>%
+total_deaths <- deaths_ %>%
   filter(tolower(Death) == "yes") %>%
   summarise(total = n())
 
@@ -123,6 +120,7 @@ death1 <- deaths %>% filter(Time == 1)
 return1  <- returns %>% filter(Time == 1)
 
 mean(return1$Return[death1$Death == "yes"] == "yes")
+
 ```
 
 ### Include your answer
