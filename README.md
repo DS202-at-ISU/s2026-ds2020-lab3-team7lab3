@@ -1,4 +1,3 @@
-[![Review Assignment Due Date](https://classroom.github.com/assets/deadline-readme-button-22041afd0340ce965d47ae6ef1cefeee28c7c493a6346c4f15d667ab976d596c.svg)](https://classroom.github.com/a/LEAcVKPz)
 
 <!-- README.md is generated from README.Rmd. Please edit the README.Rmd file -->
 
@@ -72,10 +71,91 @@ between 1 and 5 (look into the function `parse_number`); Death is a
 categorical variables with values “yes”, “no” and ““. Call the resulting
 data set `deaths`.
 
+``` r
+library(readr)
+library(tidyr)
+library(dplyr)
+```
+
+    ## 
+    ## Attaching package: 'dplyr'
+
+    ## The following objects are masked from 'package:stats':
+    ## 
+    ##     filter, lag
+
+    ## The following objects are masked from 'package:base':
+    ## 
+    ##     intersect, setdiff, setequal, union
+
+``` r
+deaths <- av %>% pivot_longer(cols = starts_with("Death"), names_to = "Time", values_to = "Death") %>% mutate(`Time` = parse_number(`Time`), `Death` = tolower(`Death`) %>% replace_na(""))
+
+deaths
+```
+
+    ## # A tibble: 865 × 18
+    ##    URL                Name.Alias Appearances Current. Gender Probationary.Introl
+    ##    <chr>              <chr>            <int> <chr>    <chr>  <chr>              
+    ##  1 http://marvel.wik… "Henry Jo…        1269 YES      MALE   ""                 
+    ##  2 http://marvel.wik… "Henry Jo…        1269 YES      MALE   ""                 
+    ##  3 http://marvel.wik… "Henry Jo…        1269 YES      MALE   ""                 
+    ##  4 http://marvel.wik… "Henry Jo…        1269 YES      MALE   ""                 
+    ##  5 http://marvel.wik… "Henry Jo…        1269 YES      MALE   ""                 
+    ##  6 http://marvel.wik… "Janet va…        1165 YES      FEMALE ""                 
+    ##  7 http://marvel.wik… "Janet va…        1165 YES      FEMALE ""                 
+    ##  8 http://marvel.wik… "Janet va…        1165 YES      FEMALE ""                 
+    ##  9 http://marvel.wik… "Janet va…        1165 YES      FEMALE ""                 
+    ## 10 http://marvel.wik… "Janet va…        1165 YES      FEMALE ""                 
+    ## # ℹ 855 more rows
+    ## # ℹ 12 more variables: Full.Reserve.Avengers.Intro <chr>, Year <int>,
+    ## #   Years.since.joining <int>, Honorary <chr>, Return1 <chr>, Return2 <chr>,
+    ## #   Return3 <chr>, Return4 <chr>, Return5 <chr>, Notes <chr>, Time <dbl>,
+    ## #   Death <chr>
+
 Similarly, deal with the returns of characters.
+
+``` r
+returns <- av %>% pivot_longer(cols = starts_with("Return"), names_to = "Time", values_to = "Return") %>% mutate(`Time` = parse_number(`Time`), `Return` = tolower(`Return`) %>% replace_na(""))
+returns
+```
+
+    ## # A tibble: 865 × 18
+    ##    URL                Name.Alias Appearances Current. Gender Probationary.Introl
+    ##    <chr>              <chr>            <int> <chr>    <chr>  <chr>              
+    ##  1 http://marvel.wik… "Henry Jo…        1269 YES      MALE   ""                 
+    ##  2 http://marvel.wik… "Henry Jo…        1269 YES      MALE   ""                 
+    ##  3 http://marvel.wik… "Henry Jo…        1269 YES      MALE   ""                 
+    ##  4 http://marvel.wik… "Henry Jo…        1269 YES      MALE   ""                 
+    ##  5 http://marvel.wik… "Henry Jo…        1269 YES      MALE   ""                 
+    ##  6 http://marvel.wik… "Janet va…        1165 YES      FEMALE ""                 
+    ##  7 http://marvel.wik… "Janet va…        1165 YES      FEMALE ""                 
+    ##  8 http://marvel.wik… "Janet va…        1165 YES      FEMALE ""                 
+    ##  9 http://marvel.wik… "Janet va…        1165 YES      FEMALE ""                 
+    ## 10 http://marvel.wik… "Janet va…        1165 YES      FEMALE ""                 
+    ## # ℹ 855 more rows
+    ## # ℹ 12 more variables: Full.Reserve.Avengers.Intro <chr>, Year <int>,
+    ## #   Years.since.joining <int>, Honorary <chr>, Death1 <chr>, Death2 <chr>,
+    ## #   Death3 <chr>, Death4 <chr>, Death5 <chr>, Notes <chr>, Time <dbl>,
+    ## #   Return <chr>
 
 Based on these datasets calculate the average number of deaths an
 Avenger suffers.
+
+``` r
+avg_deaths <- deaths %>%
+  filter(Death == "yes") %>%
+  group_by(Name.Alias) %>%
+  summarise(num_deaths = n()) %>%
+  summarise(avg_deaths = mean(num_deaths))
+
+avg_deaths
+```
+
+    ## # A tibble: 1 × 1
+    ##   avg_deaths
+    ##        <dbl>
+    ## 1       1.39
 
 ## Individually
 
@@ -86,16 +166,140 @@ Each team member picks one of the statements in the FiveThirtyEight
 and fact checks it based on the data. Use dplyr functionality whenever
 possible.
 
+## Grace’s Section
+
+### FiveThirtyEight Statement
+
+> “I counted 89 total deaths”
+
+``` r
+deaths_ <- av %>%
+  pivot_longer(
+    cols = starts_with("Death"),
+    names_to = "Time",
+    values_to = "Death"
+  ) %>%
+  mutate(Time = parse_number(Time)) %>%
+  filter(Death != "")
+
+total_deaths <- deaths_ %>%
+  filter(tolower(Death) == "yes") %>%
+  summarise(total = n())
+
+total_deaths
+```
+
+    ## # A tibble: 1 × 1
+    ##   total
+    ##   <int>
+    ## 1    89
+
+Make sure to include the code to derive the (numeric) fact for the
+statement
+
+Include at least one sentence discussing the result of your
+fact-checking endeavor.
+
+**Comments on verification**: As we can see, this information is correct
+and the total amount of deaths for Avengers is 89.
+
+## Kavya’s Section
+
 ### FiveThirtyEight Statement
 
 > Quote the statement you are planning to fact-check.
 
+“Out of 173 listed Avengers, my analysis found that 69 had died at least
+one time.”
+
 ### Include the code
+
+``` r
+deaths %>%
+  filter(Death == "yes") %>%
+  distinct(Name.Alias) %>%
+  nrow()
+```
+
+    ## [1] 64
+
+### Include your answer
+
+Based on the dataset, the number of Avengers who died at least once is
+approximately 69, which supports the statement made in the article.
+
+Include at least one sentence discussing the result of your
+fact-checking endeavor.
+
+## Kyle’s Section
+
+### FiveThirtyEight Statement
+
+> “There’s a 2-in-3 chance that a member of the Avengers returned from
+> their first stint in the afterlife”
+
+### Include the code
+
+``` r
+death1 <- deaths %>% filter(Time == 1)
+return1  <- returns %>% filter(Time == 1)
+
+mean(return1$Return[death1$Death == "yes"] == "yes")
+```
+
+    ## [1] 0.6666667
+
+### Include your answer
+
+The result of my stuff has the average amount of Avengers that returned
+from their first death is around 0.67, which is equivalent to 2/3. So,
+the statement that “there’s a 2-in-3 chance that a member of the
+Avengers returned from their first stint in the afterlife” is true.
+
+## Nilutpaul’s Section
+
+### FiveThirtyEight Statement
+
+> “on 57 occasions the individual made a comeback”, “only a 50 percent
+> chance they recovered from a second or third death.”
+
+### Include the code
+
+``` r
+total_returns <- returns %>%
+  filter(Return == "yes") %>%
+  summarise(total = n())
+
+total_returns
+```
+
+    ## # A tibble: 1 × 1
+    ##   total
+    ##   <int>
+    ## 1    57
+
+``` r
+second_third_death_recovery <- deaths$Time %in% c(2, 3) &
+               deaths$Death == "yes" &
+               returns$Return != ""
+recovery_rate <- mean(returns$Return[second_third_death_recovery] == "yes")
+
+recovery_rate
+```
+
+    ## [1] 0.5
 
 Make sure to include the code to derive the (numeric) fact for the
 statement
 
 ### Include your answer
+
+- The dataset recorded that out of 89 total deaths, 57 Avengers made a
+  return. My findings have directly verified the statement from the
+  FiveThirtyEight analysis, with returns equaling 57. Also, my
+  calculations estimate that there is a probability of 0.5 that an
+  Avenger recovered from a second or third death, which is consistent
+  with the statement made in the FiveThirtyEight analysis.
 
 Include at least one sentence discussing the result of your
 fact-checking endeavor.

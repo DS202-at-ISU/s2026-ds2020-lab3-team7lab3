@@ -114,6 +114,7 @@ deaths %>%
 Based on the dataset, the number of Avengers who died at least once is approximately 69, which supports the statement made in the article.
 
 Include at least one sentence discussing the result of your fact-checking endeavor.
+
 ## Kyle's Section
 
 ### FiveThirtyEight Statement
@@ -138,13 +139,30 @@ The result of my stuff has the average amount of Avengers that returned from the
 
 ### FiveThirtyEight Statement
 
-> Quote the statement you are planning to fact-check.
+> "on 57 occasions the individual made a comeback", "only a 50 percent chance they recovered from a second or third death."
 
 ### Include the code
+
+```{r}
+total_returns <- returns %>%
+  filter(Return == "yes") %>%
+  summarise(total = n())
+
+total_returns
+
+second_third_death_recovery <- deaths$Time %in% c(2, 3) &
+               deaths$Death == "yes" &
+               returns$Return != ""
+recovery_rate <- mean(returns$Return[second_third_death_recovery] == "yes")
+
+recovery_rate
+```
 
 Make sure to include the code to derive the (numeric) fact for the statement
 
 ### Include your answer
+
+- The dataset recorded that out of 89 total deaths, 57 Avengers made a return. My findings have directly verified the statement from the FiveThirtyEight analysis, with returns equaling 57. Also, my calculations estimate that there is a probability of 0.5 that an Avenger recovered from a second or third death, which is consistent with the statement made in the FiveThirtyEight analysis.
 
 Include at least one sentence discussing the result of your fact-checking endeavor.
 
